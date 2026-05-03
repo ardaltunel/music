@@ -1,33 +1,43 @@
 <?php
 
-include 'connect.php';
+require_once 'connect.php';
 
-
-// Şarkı ID'sini al
-if (isset($_GET['song_id'])) {
-    $song_id = $_GET['song_id'];
-
-    // Sıradaki şarkıyı getir
-    if (isset($_GET['search'])) {
-        $search    = $_GET['search'];
-        $next_song = $conn -> prepare ("SELECT * FROM songs WHERE id > :id AND artist LIKE '%$search%' ORDER BY id ASC LIMIT 1");
-    }
-    else {
-        $next_song = $conn -> prepare ("SELECT * FROM `songs` WHERE `id` > :id ORDER BY `id` ASC LIMIT 1");
-    }
-    $next_song -> execute (array (":id" => $song_id));
-    if ($next_song -> rowCount () > 0) {
-        // Şarkı bilgilerini dizide depola ve JSON olarak döndür
-        $next_song_info = $next_song -> fetch (PDO::FETCH_ASSOC);
-        echo json_encode ($next_song_info);
-    }
-    else {
-        // Sıradaki şarkı yoksa hata kodu döndür
-        http_response_code (404);
-    }
+if (!isset($_GET['song_id'])) {
+    http_response_code(400);
+    exit;
 }
-else {
-    // Şarkı ID'si belirtilmediyse hata kodu döndür
-    http_response_code (400);
+
+$song_id = (int) $_GET['song_id'];
+$search = trim($_GET['search'] ?? '');
+
+if ($search !== '') {
+    $next_song = $conn->prepare("SELECT * FROM songs WHERE status = 'approved' AND id < ? AND (artist LIKE ? OR name LIKE ?) ORDER BY id DESC LIMIT 1");
+    $term = '%' . $search . '%';
+    $next_song->execute([$song_id, $term, $term]);
+} else {
+    $next_song = $conn->prepare("SELECT * FROM songs WHERE status = 'approved' AND id < ? ORDER BY id DESC LIMIT 1");
+    $next_song->execute([$song_id]);
 }
+
+$next_song_info = $next_song->fetch(PDO::FETCH_ASSOC);
+
+if (!$next_song_info) {
+    if ($search !== '') {
+        $next_song = $conn->prepare("SELECT * FROM songs WHERE status = 'approved' AND (artist LIKE ? OR name LIKE ?) ORDER BY id DESC LIMIT 1");
+        $next_song->execute([$term, $term]);
+    } else {
+        $next_song = $conn->prepare("SELECT * FROM songs WHERE status = 'approved' ORDER BY id DESC LIMIT 1");
+        $next_song->execute();
+    }
+
+    $next_song_info = $next_song->fetch(PDO::FETCH_ASSOC);
+}
+
+if (!$next_song_info) {
+    http_response_code(404);
+    exit;
+}
+
+echo json_encode($next_song_info);
+
 ?>

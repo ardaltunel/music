@@ -1,16 +1,31 @@
 <?php
-$connection = mysqli_connect ('localhost', 'ardaltun', 'A59i7a5zgB', 'ardaltun_music');
+require_once 'auth.php';
+require_admin();
 
-if (isset($_GET['id'])) {
-    $id    = $_GET['id'];
-    $query = "DELETE FROM `songs` WHERE id = '$id'";
-    $run   = mysqli_query ($connection, $query);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: admin.php');
+    exit;
+}
 
-    if ($run) {
-        header ('location:index.php');
-    }
-    else {
-        echo "Error: " . mysqli_error ($conn);
+verify_csrf();
+
+$id = (int) ($_POST['id'] ?? 0);
+$select_song = $conn->prepare('SELECT album, music FROM songs WHERE id = ? LIMIT 1');
+$select_song->execute([$id]);
+$song = $select_song->fetch();
+
+if ($song) {
+    $delete_song = $conn->prepare('DELETE FROM songs WHERE id = ?');
+    $delete_song->execute([$id]);
+
+    foreach (['uploaded_album/' . $song['album'], 'uploaded_music/' . $song['music']] as $path) {
+        if (is_file($path)) {
+            unlink($path);
+        }
     }
 }
+
+header('Location: admin.php');
+exit;
+
 ?>

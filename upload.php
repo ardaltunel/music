@@ -1,105 +1,103 @@
 <?php
 include '../cdn.ardaltunel.com/ardaltunel.php';
-include 'connect.php';
+require_once 'auth.php';
+require_login();
 
-if (isset($_POST['submit'])) {
+$message = [];
 
-    $name   = $_POST['name'];
-    $name   = filter_var ($name, FILTER_SANITIZE_STRING);
-    $artist = $_POST['artist'];
-    $artist = filter_var ($artist, FILTER_SANITIZE_STRING);
-
-    if (!isset($artist)) {
-        $artist = '';
-    }
-
-    $album          = $_FILES['album']['name'];
-    $album          = filter_var ($album, FILTER_SANITIZE_STRING);
-    $album_size     = $_FILES['album']['size'];
-    $album_tmp_name = $_FILES['album']['tmp_name'];
-    $album_folder   = 'uploaded_album/' . $album;
-
-    if (isset($album)) {
-        if ($album_size > 2000000) {
-            $message[] = 'album size is too large!';
-        }
-        else {
-            move_uploaded_file ($album_tmp_name, $album_folder);
-        }
-    }
-    else {
-        $album = '';
-    }
-
-    $music          = $_FILES['music']['name'];
-    $music          = filter_var ($music, FILTER_SANITIZE_STRING);
-    $music_size     = $_FILES['music']['size'];
-    $music_tmp_name = $_FILES['music']['tmp_name'];
-    $music_folder   = 'uploaded_music/' . $music;
-
-    if ($music_size > 100000000) {
-        $message[] = 'music size is too large!';
-    }
-    else {
-        $upload_music = $conn -> prepare ("INSERT INTO `songs`(name, artist, album, music) VALUES(?,?,?,?)");
-        $upload_music -> execute ([$name, $artist, $album, $music]);
-        move_uploaded_file ($music_tmp_name, $music_folder);
-        $message[] = 'new music uploaded!';
-    }
-
+function unique_upload_name($original_name)
+{
+    $extension = strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
+    $safe_extension = preg_replace('/[^a-z0-9]/', '', $extension);
+    return bin2hex(random_bytes(12)) . ($safe_extension ? '.' . $safe_extension : '');
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verify_csrf();
+
+    $name   = trim($_POST['name'] ?? '');
+    $artist = trim($_POST['artist'] ?? '');
+    $album = '';
+    $music = '';
+
+    if ($name === '') {
+        $message[] = 'Müzik adı zorunludur.';
+    }
+
+    if (!empty($_FILES['album']['name'])) {
+        $album_extension = strtolower(pathinfo($_FILES['album']['name'], PATHINFO_EXTENSION));
+        if ($_FILES['album']['size'] > 2 * 1024 * 1024) {
+            $message[] = 'Albüm görseli en fazla 2 MB olabilir.';
+        } elseif (!in_array($album_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'jfif'], true)) {
+            $message[] = 'Albüm görseli jpg, png, gif veya webp formatında olmalı.';
+        } else {
+            $album = unique_upload_name($_FILES['album']['name']);
+        }
+    }
+
+    if (empty($_FILES['music']['name']) || $_FILES['music']['error'] !== UPLOAD_ERR_OK) {
+        $message[] = 'Müzik dosyası seçmelisiniz.';
+    } elseif ($_FILES['music']['size'] > 100 * 1024 * 1024) {
+        $message[] = 'Müzik dosyası en fazla 100 MB olabilir.';
+    } else {
+        $music_extension = strtolower(pathinfo($_FILES['music']['name'], PATHINFO_EXTENSION));
+        if (!in_array($music_extension, ['mp3', 'wav', 'ogg', 'm4a', 'aac', 'flac'], true)) {
+            $message[] = 'Müzik dosyası mp3, wav, ogg, m4a, aac veya flac formatında olmalı.';
+        } else {
+            $music = unique_upload_name($_FILES['music']['name']);
+        }
+    }
+
+    if (!$message) {
+        $status = is_admin() ? 'approved' : 'pending';
+        $upload_music = $conn->prepare('INSERT INTO songs (user_id, name, artist, album, music, status) VALUES (?, ?, ?, ?, ?, ?)');
+        $upload_music->execute([current_user()['id'], $name, $artist, $album, $music, $status]);
+        if ($album !== '') {
+            move_uploaded_file($_FILES['album']['tmp_name'], 'uploaded_album/' . $album);
+        }
+        move_uploaded_file($_FILES['music']['tmp_name'], 'uploaded_music/' . $music);
+        $message[] = is_admin()
+            ? 'Müzik yüklendi ve yayına alındı.'
+            : 'Müzik yüklendi. Admin onayından sonra sitede görünecek.';
+    }
+}
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<?= $Doctype ?><?= $Lang ?>
 <head>
-    <title>Upload Music - Arda Altunel</title>
+    <title>Müzik Yükle - Arda Altunel</title>
     <?= $Meta ?><?= $GoogleTag ?><?= $GoogleAdSanse ?><?= $MetaIcons ?>
-
-    <!-- font awesome cdn link  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
-
-    <!-- custom css file link  -->
-    <link rel="stylesheet" href="<?= $DomainUrlFullPath ?>css/style.css">
-
+    <link rel="stylesheet" href="<?= $DomainUrlFullPath ?>/css/style.css">
 </head>
 <body>
+<header class="site-header">
+    <a href="/" class="brand">Music</a>
+    <nav class="top-nav">
+        <?php if (is_admin()) : ?><a href="admin.php"><i class="fas fa-shield-halved"></i><span>Admin</span></a><?php endif; ?>
+        <a href="logout.php"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></a>
+    </nav>
+</header>
 
-<?php
-if (isset($message)) {
-    foreach ($message as $message) {
-        echo '
-      <div class="message">
-         <span>' . $message . '</span>
-         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
-      </div>
-      ';
-    }
-}
-?>
+<?php foreach ($message as $item) : ?>
+    <div class="message"><span><?= e($item) ?></span><i class="fas fa-times" onclick="this.parentElement.remove();"></i></div>
+<?php endforeach; ?>
 
 <section class="form-container">
-
-    <h3 class="heading"><a href="/" style="color: var(--black) !important;">
-            <span>Upload Music</span><br>
-            <span>Click Me Go Home</span>
-        </a></h3>
-
+    <h3 class="heading"><a href="/">Müzik Yükle</a></h3>
     <form action="" method="POST" enctype="multipart/form-data">
-        <p>Music Name <span>*</span></p>
-        <input type="text" name="name" placeholder="Enter Music Name" required maxlength="100" class="box">
-        <p>Artist Name</p>
-        <input type="text" name="artist" placeholder="Enter Artist Name" maxlength="100" class="box">
-        <p>Select Music <span>*</span></p>
+        <?= csrf_field() ?>
+        <p>Müzik Adı <span>*</span></p>
+        <input type="text" name="name" placeholder="Müziğin adını girin" required maxlength="100" class="box">
+        <p>Sanatçı Adı</p>
+        <input type="text" name="artist" placeholder="Sanatçının adını girin" maxlength="100" class="box">
+        <p>Müzik Seç <span>*</span></p>
         <input type="file" name="music" class="box" required accept="audio/*">
-        <p>Select Album Photo</p>
+        <p>Albüm Fotoğrafı Seç</p>
         <input type="file" name="album" class="box" accept="image/*">
-        <input type="submit" value="upload music" class="btn" name="submit">
-        <a href="/" class="option-btn">Go To Home</a>
+        <input type="submit" value="<?= is_admin() ? 'Yükle ve Yayına Al' : 'Onaya Gönder' ?>" class="btn">
+        <a href="/" class="option-btn">Ana Sayfaya Dön</a>
     </form>
-
 </section>
-
 </body>
 </html>
