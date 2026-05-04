@@ -1,4 +1,4 @@
-# Arda Altunel Music
+# Music App
 
 GitHub Pages uyumlu müzik sitesi. Site statik HTML/CSS/JS olarak yayınlanır; üyelik, giriş, admin paneli, müzik yükleme, düzenleme, yayına alma, gizleme ve silme işlemleri Supabase ile çalışır.
 
