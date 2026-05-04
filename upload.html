@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Arda Altunel Music şarkı ekleme">
+    <title>Müzik Ekle | Arda Altunel</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body data-page="upload">
+<header class="site-header">
+    <a href="index.html" class="brand">Music</a>
+    <nav class="top-nav" data-auth-nav>
+    </nav>
+</header>
+
+<section class="form-container">
+    <h3 class="heading"><a href="index.html">Müzik Yükle</a></h3>
+    <form data-upload-form>
+        <div data-message-area></div>
+        <p>Müzik Adı <span>*</span></p>
+        <input type="text" name="name" placeholder="Müziğin adını girin" required maxlength="100" class="box">
+        <p>Sanatçı Adı</p>
+        <input type="text" name="artist" placeholder="Sanatçının adını girin" maxlength="100" class="box">
+        <p>Müzik Seç <span>*</span></p>
+        <input type="file" name="music" class="box" required accept="audio/*">
+        <p>Albüm Fotoğrafı Seç</p>
+        <input type="file" name="album" class="box" accept="image/*">
+        <button type="submit" class="btn" data-upload-submit>Onaya Gönder</button>
+        <a href="index.html" class="option-btn">Ana Sayfaya Dön</a>
+    </form>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/app.js?v=10"></script>
+</body>
+</html>
+

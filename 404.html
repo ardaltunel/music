@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Yönlendiriliyor - Arda Altunel Music</title>
+    <script>
+        const routes = {
+            '/index.php': '/index.html',
+            '/search.php': '/search.html',
+            '/upload.php': '/upload.html',
+            '/login.php': '/login.html',
+            '/register.php': '/register.html',
+            '/admin.php': '/admin.html'
+        };
+        const path = window.location.pathname;
+        const match = Object.keys(routes).find((key) => path.endsWith(key));
+        if (match) {
+            const base = path.slice(0, -match.length);
+            window.location.replace(base + routes[match] + window.location.search + window.location.hash);
+        } else {
+            window.location.replace('index.html');
+        }
+    </script>
+</head>
+<body></body>
+</html>

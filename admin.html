@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Arda Altunel Music admin">
+    <title>Admin | Arda Altunel</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body data-page="admin">
+<header class="site-header">
+    <a href="index.html" class="brand">Music</a>
+    <nav class="top-nav" data-auth-nav>
+    </nav>
+</header>
+
+<section class="admin-panel">
+    <div class="page-title">
+        <h1>Şarkı Yönetimi</h1>
+        <p>Onay bekleyen şarkılar sitede görünmez. Onaylananlar yayına alınır, gizlenenler yayından kalkar.</p>
+    </div>
+    <div data-message-area></div>
+    <div class="admin-edit-panel" data-admin-edit-panel hidden>
+        <form class="admin-edit-dialog" data-admin-edit-form role="dialog" aria-modal="true" aria-labelledby="admin-edit-title">
+            <input type="hidden" name="id">
+            <input type="hidden" name="current_music_path">
+            <input type="hidden" name="current_album_path">
+            <div class="admin-edit-head">
+                <strong id="admin-edit-title">Şarkıyı Düzenle</strong>
+                <button type="button" class="admin-edit-close" data-admin-edit-cancel aria-label="Kapat"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="admin-edit-message" data-admin-edit-message hidden></div>
+            <div class="admin-edit-grid">
+                <label>
+                    <span>Müzik Adı</span>
+                    <input type="text" name="name" required maxlength="100" class="box">
+                </label>
+                <label>
+                    <span>Sanatçı</span>
+                    <input type="text" name="artist" maxlength="100" class="box">
+                </label>
+                <label>
+                    <span>Durum</span>
+                    <select name="status" class="box">
+                        <option value="pending">Onay Bekliyor</option>
+                        <option value="approved">Onaylandı</option>
+                        <option value="hidden">Gizlendi</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Yeni Müzik Dosyası</span>
+                    <input type="file" name="music" class="box" accept="audio/*">
+                </label>
+                <label>
+                    <span>Yeni Kapak Görseli</span>
+                    <input type="file" name="album" class="box" accept="image/*">
+                </label>
+            </div>
+            <div class="admin-edit-actions">
+                <button type="submit" class="btn">Güncelle</button>
+                <button type="button" class="option-btn" data-admin-edit-cancel>Vazgeç</button>
+            </div>
+        </form>
+    </div>
+    <div class="admin-list" data-admin-list>
+        <article class="admin-song">
+            <div class="admin-song-main">
+                <strong>Şarkılar yükleniyor...</strong>
+            </div>
+        </article>
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/app.js?v=10"></script>
+</body>
+</html>
+

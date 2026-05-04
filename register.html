@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Arda Altunel Music kayıt">
+    <title>Kayıt Ol - Arda Altunel Music</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body data-page="register">
+<section class="form-container auth-page">
+    <h3 class="heading"><a href="index.html">Music</a></h3>
+    <form data-register-form>
+        <div data-message-area></div>
+        <p>Ad Soyad <span>*</span></p>
+        <input type="text" name="name" placeholder="Adınız" required maxlength="100" class="box">
+        <p>E-posta <span>*</span></p>
+        <input type="email" name="email" placeholder="E-posta adresiniz" required maxlength="150" class="box">
+        <p>Şifre <span>*</span></p>
+        <div class="password-field">
+            <input type="password" name="password" placeholder="En az 6 karakter" required minlength="6" class="box">
+            <button type="button" class="toggle-password" aria-label="Şifreyi göster"><i class="fas fa-eye"></i></button>
+        </div>
+        <p>Şifre Tekrar <span>*</span></p>
+        <div class="password-field">
+            <input type="password" name="password_confirm" placeholder="Şifrenizi tekrar girin" required minlength="6" class="box">
+            <button type="button" class="toggle-password" aria-label="Şifreyi göster"><i class="fas fa-eye"></i></button>
+        </div>
+        <button type="submit" class="btn">Kayıt Ol</button>
+        <a href="login.html" class="option-btn">Giriş Yap</a>
+        <a href="index.html" class="option-btn">Ana Sayfaya Dön</a>
+    </form>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/app.js?v=10"></script>
+</body>
+</html>
+

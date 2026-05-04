@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Arda Altunel Music playlist">
+    <title>Music App | Arda Altunel</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body data-page="home">
+<header class="site-header">
+    <a href="index.html" class="brand">Music</a>
+    <nav class="top-nav" data-auth-nav>
+        <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i><span>Müzik Ekle</span></a>
+    </nav>
+</header>
+
+<section class="playlist">
+    <div class="page-title">
+        <h1>Music Playlist</h1>
+        <p>Yayındaki şarkılar.</p>
+    </div>
+
+    <section class="search__bar">
+        <form class="container search__bar-container" data-search-form>
+            <i class="fas fa-search"></i>
+            <input type="search" name="search" placeholder="Şarkı veya sanatçı ara" autocomplete="off">
+            <button type="submit">Ara</button>
+        </form>
+    </section>
+
+    <div class="box-container" data-song-grid>
+        <article class="box more-btn">
+            <p class="empty-state">Şarkılar yükleniyor...</p>
+        </article>
+    </div>
+</section>
+
+<div class="music-player" id="myModal" aria-hidden="true">
+    <i class="fas fa-times" id="close" role="button" aria-label="Kapat"></i>
+    <div class="main-box">
+        <button class="player-arrow" id="prev_song_button" type="button" aria-label="Önceki şarkı"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
+        <div class="box box-custom">
+            <img src="" class="album" alt="">
+            <div class="name"></div>
+            <div class="artist"></div>
+            <audio src="" controls class="music" id="myAudio"></audio>
+        </div>
+        <button class="player-arrow" id="next_song_button" type="button" aria-label="Sonraki şarkı"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/app.js?v=10"></script>
+</body>
+</html>
+
