@@ -1,72 +1,241 @@
 # Music App
 
-GitHub Pages uyumlu müzik sitesi. Site statik HTML/CSS/JS olarak yayınlanır; üyelik, giriş, admin paneli, müzik yükleme, düzenleme, yayına alma, gizleme ve silme işlemleri Supabase ile çalışır.
+Supabase destekli, GitHub Pages uyumlu modern müzik paylaşım platformu.
+
+Bu proje; kullanıcı sistemi, admin paneli, müzik yükleme sistemi ve Supabase Storage entegrasyonu bulunan statik bir müzik uygulamasıdır.
+
+## 🌍 Özellikler
+
+- Kullanıcı kayıt & giriş sistemi
+- Admin paneli
+- Müzik yükleme sistemi
+- Şarkı düzenleme
+- Şarkı gizleme / yayına alma
+- Şarkı silme sistemi
+- Album cover yükleme
+- Supabase Storage entegrasyonu
+- Responsive tasarım
+- GitHub Pages desteği
+- Tamamen statik frontend mimarisi
+
+---
+
+# 🚀 Kullanılan Teknolojiler
+
+<p align="left">
+  <img src="https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+  <img src="https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white">
+  <img src="https://img.shields.io/badge/GitHub_Pages-121013?style=for-the-badge&logo=github&logoColor=white">
+</p>
+
+---
+
+# 📂 Proje Yapısı
+
+```text
+.
+├── css/
+├── js/
+├── uploaded_music/
+├── uploaded_album/
+├── supabase/
+│   ├── schema.sql
+│   ├── seed-songs.sql
+│   └── admin-actions-policies.sql
+├── index.html
+├── login.html
+├── admin.html
+└── upload.html
+```
+
+---
+
+# ⚙️ GitHub Pages Yayına Alma
 
 ## GitHub Desktop ile Yayınlama
 
-1. GitHub Desktop içinde `File > Add local repository` seç.
-2. Bu klasörü seç: `music-github-pages`.
-3. Repository henüz GitHub'da yoksa `Publish repository` butonuna bas.
-4. Repository public olabilir; Supabase publishable key tarayıcıda kullanılmak için tasarlanmıştır. Secret veya service role key ekleme.
-5. GitHub'da repository sayfasından `Settings > Pages` bölümüne gir.
-6. `Build and deployment` altında `Deploy from a branch` seç.
-7. Branch olarak `main`, klasör olarak `/root` seçip kaydet.
-8. GitHub Pages adresin genelde şu formatta olur: `https://kullaniciadi.github.io/repository-adi/`
+1. GitHub Desktop açın.
+2. `File > Add local repository` seçeneğine girin.
+3. Proje klasörünü seçin.
+4. Repository GitHub’da yoksa:
 
-## Supabase Ayarları
+```text
+Publish repository
+```
 
-Projede Supabase bağlantısı hazır:
+butonuna basın.
+
+5. GitHub repository ayarlarından:
+
+```text
+Settings > Pages
+```
+
+ekranına girin.
+
+6. Aşağıdaki ayarları yapın:
+
+```text
+Deploy from a branch
+Branch: main
+Folder: /root
+```
+
+7. Kaydedin.
+
+GitHub Pages adresiniz genellikle şu formatta olur:
+
+```text
+https://username.github.io/repository-name/
+```
+
+---
+
+# 🔑 Supabase Ayarları
+
+Projede Supabase bağlantısı hazır şekilde bulunmaktadır.
+
+Yeni bir Supabase projesi kullanacaksanız:
+
+```text
+js/supabase-config.js
+```
+
+dosyasını düzenleyin.
 
 ```js
 window.MUSIC_SUPABASE_CONFIG = {
-    url: 'https://zgqjzsueslitzyewoqwc.supabase.co',
-    anonKey: 'sb_publishable_xfxNXDMVm-7J3n9TsRHMXw_2T8QktSg',
+    url: 'https://PROJECT_ID.supabase.co',
+    anonKey: 'SUPABASE_ANON_KEY',
     storageBucket: 'music-files'
 };
 ```
 
-Yeni Supabase projesi kullanırsan bu değerleri `js/supabase-config.js` içinde değiştir.
+⚠️ Güvenlik nedeniyle:
 
-## Supabase SQL Kurulumu
+- `service_role`
+- `secret key`
+- `.env`
 
-İlk kurulum için Supabase Dashboard > SQL Editor içinde sırayla çalıştır:
+dosyalarını GitHub’a yüklemeyin.
 
-1. `supabase/schema.sql`
-2. `supabase/seed-songs.sql`
-3. Admin butonları çalışmazsa ek olarak `supabase/admin-actions-policies.sql`
+---
 
-İlk hesabını siteden oluşturduktan sonra onu admin yapmak için SQL Editor'da çalıştır:
+# 🛠️ Supabase SQL Kurulumu
+
+Supabase Dashboard üzerinden:
+
+```text
+SQL Editor
+```
+
+ekranına girin.
+
+Sırasıyla çalıştırın:
+
+```text
+1. supabase/schema.sql
+2. supabase/seed-songs.sql
+3. supabase/admin-actions-policies.sql
+```
+
+---
+
+# 👑 Admin Yetkisi Verme
+
+İlk hesabınızı oluşturduktan sonra SQL Editor üzerinden:
 
 ```sql
 update public.profiles
 set role = 'admin'
-where email = 'senin-email-adresin@example.com';
+where email = 'your-email@example.com';
 ```
 
-## Authentication URL Ayarı
+sorgusunu çalıştırın.
 
-Supabase Dashboard > Authentication > URL Configuration bölümünde GitHub Pages adresini ekle:
+---
 
-- Site URL: GitHub Pages adresin
-- Redirect URLs: GitHub Pages adresin ve gerekirse `login.html`, `admin.html`, `upload.html` sayfaları
+# 🔐 Authentication URL Ayarı
+
+Supabase Dashboard:
+
+```text
+Authentication > URL Configuration
+```
+
+ekranına girin.
+
+GitHub Pages adresinizi ekleyin.
 
 Örnek:
 
 ```text
-https://kullaniciadi.github.io/repository-adi/
-https://kullaniciadi.github.io/repository-adi/login.html
-https://kullaniciadi.github.io/repository-adi/admin.html
-https://kullaniciadi.github.io/repository-adi/upload.html
+https://username.github.io/repository-name/
+https://username.github.io/repository-name/login.html
+https://username.github.io/repository-name/admin.html
+https://username.github.io/repository-name/upload.html
 ```
 
-## Dosyalar ve Boyut
+---
 
-- Eski şarkı dosyaları `uploaded_music/` içinde duruyor, eski kapaklar `uploaded_album/` içinde duruyor.
-- Toplam proje boyutu yaklaşık 137 MB. GitHub'a yüklenebilir; en büyük tek dosya 100 MB sınırının altında.
-- Yeni yüklenen müzikler Supabase Storage içindeki `music-files` bucket'ına gider.
+# 🎵 Dosya Sistemi
 
-## Güvenlik Notları
+- Eski müzik dosyaları:
 
-- `sb_publishable...` anahtarı public istemci anahtarıdır, GitHub'da durabilir.
-- `sb_secret...`, `service_role`, veritabanı şifresi veya `.env` dosyası GitHub'a koyma.
-- Admin yetkisi sadece Supabase `profiles.role = 'admin'` olan kullanıcıda çalışır.
+```text
+uploaded_music/
+```
+
+- Album cover dosyaları:
+
+```text
+uploaded_album/
+```
+
+klasörlerinde tutulur.
+
+Yeni yüklenen dosyalar:
+
+```text
+music-files
+```
+
+Supabase Storage bucket’ına kaydedilir.
+
+---
+
+# 📦 Proje Boyutu
+
+- Toplam proje boyutu yaklaşık:
+
+```text
+137 MB
+```
+
+- GitHub yükleme limitleriyle uyumludur.
+- En büyük dosya GitHub’ın 100 MB sınırını aşmaz.
+
+---
+
+# 🎯 Proje Amacı
+
+Bu proje;
+
+- Modern müzik platformu geliştirmek
+- Supabase Authentication sistemi kullanmak
+- Storage yönetimini öğrenmek
+- Static frontend mimarisi oluşturmak
+- GitHub Pages üzerinde dinamik yapı kurmak
+
+amacıyla geliştirilmiştir.
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+For more details:
+<a href="LICENSE">LICENSE</a>
