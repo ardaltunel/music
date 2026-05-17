@@ -239,3 +239,7 @@ This project is licensed under the MIT License.
 
 For more details:
 <a href="LICENSE">LICENSE</a>
+
+---
+
+Made with ❤️ by Arda Altunel
